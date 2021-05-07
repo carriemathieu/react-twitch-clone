@@ -29,6 +29,21 @@ class StreamCreate extends React.Component {
     }
 }
 
+// formValues contains all keys/values in form fields
+// errors obj has property name identical to field name, will be passed down to renderInput func
+const validate = (formValues) => {
+    const errors = {}
+    // if user did not enter title, return object w/ key value pairs w/ name of field & error message
+    if (!formValues.title) {
+        errors.title = 'You must enter a title.'
+    }
+    if (!formValues.description) {
+        errors.description = 'You must enter a description.'
+    }
+    return errors
+}
+
 export default reduxForm({
-    form: 'streamCreate'
+    form: 'streamCreate',
+    validate
 })(StreamCreate)
