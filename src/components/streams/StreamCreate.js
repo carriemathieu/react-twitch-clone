@@ -2,12 +2,27 @@ import React from 'react'
 import { Field, reduxForm } from 'redux-from'
 
 class StreamCreate extends React.Component {
+    renderError({ error, touched }) {
+        if (touched && error) {
+            return (
+                <div className="ui error message">
+                    <div className="header">
+                        {error}
+                    </div>
+                </div>
+            )
+        }
+    }
     // accepts label as arg, assigns to each input field
-    renderInput({ input, label }) {
+    // meta argument contains errors property & "touched" prop
+    // error func. to access "this"
+    renderInput = ({ input, label, meta }) => {
+        const className = `field ${meta.error && meta.touched ? 'error' : ' '}`
         return (
-            <div className="field">
+            <div className={className}>
                 <label>{label}</label>
-                <input {...input}/>
+                <input {...input} autoComplete="off"/>
+                {this.renderError(meta)}
             </div>
         )
     }
@@ -20,7 +35,7 @@ class StreamCreate extends React.Component {
     // passes label as prop to renderInput function
     render() {
         return (
-            <form className="ui form" onSubmit={this.props.handleSubmit(this.onSubmit)}>
+            <form className="ui form error" onSubmit={this.props.handleSubmit(this.onSubmit)}>
                 <Field name="title" component={this.renderInput} label="Enter Title"/>
                 <Field name="description" component={this.renderInput} label="Enter Description"/>
                 <button className="ui button primary">submit</button>
@@ -29,6 +44,7 @@ class StreamCreate extends React.Component {
     }
 }
 
+// validate func. gets called every time user makes change on form
 // formValues contains all keys/values in form fields
 // errors obj has property name identical to field name, will be passed down to renderInput func
 const validate = (formValues) => {
